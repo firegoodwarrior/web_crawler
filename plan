@@ -1,0 +1,15 @@
+youtube 주소를 txt에 저장
+
+python에서 row 단위로 read
+
+현재 채널의 url 저장
+
+
+현재 채널 내의 영상 탐색 (nth-child)
+
+comment 부문 탐색 -> 유저/글/추천수를 coloumn으로 하여 수집, 영상 단위로 저장
+
+
+후에 nlp에서 글 내의 정보 분석 + 전체 txt 클러스터링
+
+->빈출 어휘 
