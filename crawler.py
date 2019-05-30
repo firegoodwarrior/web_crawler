@@ -64,11 +64,23 @@ while True:
             output = 'test/' + str(number) + "_" + str(num) + '.txt'
             file = open(output, 'w', encoding='utf8')  # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
             for commentaddr in commentaddrs:
-                commentaddr=str(commentaddr)
+                commentaddr = str(commentaddr)
                 #print(commentaddr)
                 comment = commentaddr.partition('split-lines="">')[2]
                 comment = comment.partition('</yt-formatted-string')[0]
-                print(comment)
+                if '<a class="yt-simple-endpoint' in comment:
+#                    comment = comment.partition('false">')[2]
+                    comments = comment.partition('</a>')
+                    for comm in comments:
+                        print(comm)
+#                    token = '</a><span class="bold style-scope yt-formatted-string">'
+#                    part_a = comment.partition(token)[0]
+#                    part_b = comment.partition(token)[1]
+#                    part_b = part_b.partition('</span>')[0]
+#                    print(part_a, part_b)
+#                    comment=part_a+part_b
+                #print(comment)
+                print("-------------------")
                 file.write(comment)
             file.close()
             #  soup3 = BeautifulSoup(html3, "html.parser")
