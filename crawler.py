@@ -45,22 +45,37 @@ while True:
           #  print(addr)
             goal = "https://www.youtube.com/"+addr
             driver.get(goal)
-            page_down_cnt = 50
-            start_scroll=0
+            page_down_cnt = 20
+            start_scroll = 0
             while page_down_cnt:
                 #driver.execute_script("window.scrollTo(start_scroll,document.body.scrollHeight);")
                 driver.find_element_by_tag_name('body').send_keys(Keys.END)
-                page_down_cnt -= 1 # send_keys(Keys.END)로 아래까지 쭉 search
-                time.sleep(0.3) 
+                page_down_cnt -= 1
+                time.sleep(0.3)
             #req3 = requests.get(goal)
             #html3 = req3.content.decode('utf-8','replace')
             #soup3 = BeautifulSoup(html3, "lxml")
-            html3=driver.page_source #html3 를 현재 page_source로 다 저장.
+            #<yt-formatted-string class="style-scope ytd-comment-renderer"
+            #id="content-text" slot="content" split-lines="">
+            #행님 블루블랙을 하시니 헤비메탈을 잘하실 것  같습니다</yt-formatted-string>
+            html3 = driver.page_source
             soup3 = BeautifulSoup(html3, "html.parser")
-            output = 'test/'+str(number)+"_"+str(num)+'.txt'
-            file = open(output, 'w', encoding='utf8') # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
-            file.write(str(soup3))
+            commentaddrs = soup3.findAll("yt-formatted-string", {"class":"style-scope ytd-comment-renderer","id":"content-text", "slot":"content"})
+            output = 'test/' + str(number) + "_" + str(num) + '.txt'
+            file = open(output, 'w', encoding='utf8')  # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
+            for commentaddr in commentaddrs:
+                commentaddr=str(commentaddr)
+                #print(commentaddr)
+                comment = commentaddr.partition('split-lines="">')[2]
+                comment = comment.partition('</yt-formatted-string')[0]
+                print(comment)
+                file.write(comment)
             file.close()
+            #  soup3 = BeautifulSoup(html3, "html.parser")
+            #output = 'test/'+str(number)+"_"+str(num)+'.txt'
+            #file = open(output, 'w', encoding='utf8') # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
+            #file.write(str(soup3))
+            #file.close()
             num += 1
 
         driver.close()
@@ -71,4 +86,3 @@ while True:
 
 
 f.close()
- 
