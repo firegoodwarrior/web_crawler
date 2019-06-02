@@ -4,8 +4,7 @@ from bs4 import BeautifulSoup, Tag
 from selenium import webdriver
 import time
 from selenium.webdriver.common.keys import Keys
-import re
-import pytube
+import os
 f = open("test/channel.txt", 'r')#channel url을 모은 text파일
 number=0
 while True:
@@ -54,7 +53,10 @@ while True:
             html3 = driver.page_source
             soup3 = BeautifulSoup(html3, "html.parser")
             commentaddrs = soup3.findAll("yt-formatted-string", {"class":"style-scope ytd-comment-renderer","id":"content-text", "slot":"content"})
-            output = 'test/' + str(number) + "_" + str(num) + '.txt'
+            output = 'comments/' + str(number)
+            if not os.path.isdir(output):
+                os.mkdir(output)
+            output += "/" + str(num) + '.txt'
             file = open(output, 'w', encoding='utf8')  # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
             for commentaddr in commentaddrs:
                 commentaddr = str(commentaddr)
