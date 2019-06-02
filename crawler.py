@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup, Tag
 from selenium import webdriver
 import time
 from selenium.webdriver.common.keys import Keys
+import re
 import pytube
 f = open("test/channel.txt", 'r')#channel url을 모은 text파일
 number=0
@@ -42,22 +43,14 @@ while True:
             #print(finder)
             addr = finder.partition('href="/')[2]
             addr = addr.split('"')[0]
-          #  print(addr)
             goal = "https://www.youtube.com/"+addr
             driver.get(goal)
             page_down_cnt = 20
             start_scroll = 0
             while page_down_cnt:
-                #driver.execute_script("window.scrollTo(start_scroll,document.body.scrollHeight);")
                 driver.find_element_by_tag_name('body').send_keys(Keys.END)
                 page_down_cnt -= 1
                 time.sleep(0.3)
-            #req3 = requests.get(goal)
-            #html3 = req3.content.decode('utf-8','replace')
-            #soup3 = BeautifulSoup(html3, "lxml")
-            #<yt-formatted-string class="style-scope ytd-comment-renderer"
-            #id="content-text" slot="content" split-lines="">
-            #행님 블루블랙을 하시니 헤비메탈을 잘하실 것  같습니다</yt-formatted-string>
             html3 = driver.page_source
             soup3 = BeautifulSoup(html3, "html.parser")
             commentaddrs = soup3.findAll("yt-formatted-string", {"class":"style-scope ytd-comment-renderer","id":"content-text", "slot":"content"})
@@ -65,36 +58,18 @@ while True:
             file = open(output, 'w', encoding='utf8')  # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
             for commentaddr in commentaddrs:
                 commentaddr = str(commentaddr)
-                #print(commentaddr)
                 comment = commentaddr.partition('split-lines="">')[2]
                 comment = comment.partition('</yt-formatted-string')[0]
-                if '<a class="yt-simple-endpoint' in comment:
-#                    comment = comment.partition('false">')[2]
-                    comments = comment.partition('</a>')
-                    for comm in comments:
-                        print(comm)
-#                    token = '</a><span class="bold style-scope yt-formatted-string">'
-#                    part_a = comment.partition(token)[0]
-#                    part_b = comment.partition(token)[1]
-#                    part_b = part_b.partition('</span>')[0]
-#                    print(part_a, part_b)
-#                    comment=part_a+part_b
-                #print(comment)
-                print("-------------------")
+                comment += '\n'
                 file.write(comment)
             file.close()
-            #  soup3 = BeautifulSoup(html3, "html.parser")
-            #output = 'test/'+str(number)+"_"+str(num)+'.txt'
-            #file = open(output, 'w', encoding='utf8') # 내부 구조를 보기 위한것. encoding 작업을 하지 않으면 오류나니까 유의
-            #file.write(str(soup3))
-            #file.close()
             num += 1
 
         driver.close()
     else:
         print("Fail")
         print("Get Next Channel")
-    number+=1
+    number += 1
 
 
 f.close()
